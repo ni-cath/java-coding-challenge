@@ -1,6 +1,6 @@
 package com.crewmeister.cmcodingchallenge.web.controller;
 
-import com.crewmeister.cmcodingchallenge.exception.InvalidDateParamValue;
+import com.crewmeister.cmcodingchallenge.exception.InvalidDateParamValueException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ExchangeRateControllerAdvice {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(InvalidDateParamValue.class)
+    @ExceptionHandler(InvalidDateParamValueException.class)
     public String handleInvalidDateParamValue(Exception e) {
         return "Bad request: " + e.getMessage();
     }

@@ -1,19 +1,18 @@
 package com.crewmeister.cmcodingchallenge.repository;
 
-import com.crewmeister.cmcodingchallenge.model.ExchangeRate;
+import com.crewmeister.cmcodingchallenge.persistence.entity.Currency;
+import com.crewmeister.cmcodingchallenge.persistence.entity.ExchangeRate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface ExchangeRateRepository extends JpaRepository<ExchangeRate, Long> {
 
-    List<String> findDistinctCurrencyByDate(LocalDate date);
+    List<ExchangeRate> findByDate(LocalDateTime date);
 
-    List<ExchangeRate> findByDate(LocalDate date);
-
-    Optional<ExchangeRate> findByCurrencyAndDate(String currency, LocalDate date);
+    Optional<ExchangeRate> findByCurrencyAndDate(Currency currency, LocalDateTime date);
 }

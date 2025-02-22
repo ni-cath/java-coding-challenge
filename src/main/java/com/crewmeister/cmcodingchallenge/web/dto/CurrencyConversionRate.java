@@ -1,18 +1,18 @@
 package com.crewmeister.cmcodingchallenge.web.dto;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
-@AllArgsConstructor
+@Builder
 public class CurrencyConversionRate {
 
     private String currencyCode;
 
     private BigDecimal conversionRate;
 
-    private LocalDate actualDate;
+    private LocalDateTime actualDate;
 }

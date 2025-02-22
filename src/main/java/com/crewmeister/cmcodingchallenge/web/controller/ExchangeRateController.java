@@ -1,8 +1,9 @@
 package com.crewmeister.cmcodingchallenge.web.controller;
 
-import com.crewmeister.cmcodingchallenge.model.ExchangeRate;
+import com.crewmeister.cmcodingchallenge.persistence.entity.ExchangeRate;
+import com.crewmeister.cmcodingchallenge.service.ConvertService;
+import com.crewmeister.cmcodingchallenge.service.CurrencyService;
 import com.crewmeister.cmcodingchallenge.service.ExchangeRateService;
-import com.crewmeister.cmcodingchallenge.service.ExchangeRateServiceImpl;
 import com.crewmeister.cmcodingchallenge.util.ApiPath;
 import com.crewmeister.cmcodingchallenge.web.dto.CurrencyConversionRate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +22,17 @@ public class ExchangeRateController {
 
     private final ExchangeRateService exchangeRateService;
 
+    private final CurrencyService currencyService;
+
+    private final ConvertService convertService;
+
     @Autowired
-    public ExchangeRateController(ExchangeRateService exchangeRateService) {
+    public ExchangeRateController(ExchangeRateService exchangeRateService,
+                                  CurrencyService currencyService,
+                                  ConvertService convertService) {
         this.exchangeRateService = exchangeRateService;
+        this.currencyService = currencyService;
+        this.convertService = convertService;
     }
 
     @GetMapping("/rates")
@@ -33,14 +42,18 @@ public class ExchangeRateController {
 
         return exchangeRates.stream()
                 .map(rate ->
-                        new CurrencyConversionRate(rate.getCurrency(), rate.getRate(), rate.getDate()))
-                .collect(Collectors.toList());
+                        CurrencyConversionRate.builder()
+                                .conversionRate(rate.getRate())
+                                .currencyCode(rate.getCurrency().getCurrencyCode())
+                                .actualDate(rate.getDate())
+                                .build()
+                ).collect(Collectors.toList());
     }
 
     @GetMapping("/currencies")
     @ResponseBody
     public Collection<String> getCurrencies() {
-        return exchangeRateService.getAllAvailableCurrencies();
+        return currencyService.getAllAvailableCurrencyCodes();
     }
 
     @GetMapping("/convert")
@@ -48,6 +61,7 @@ public class ExchangeRateController {
     public Double getConvertedAmount(@RequestParam String cur,
                                      @RequestParam Double amount,
                                      @RequestParam(required = false) String date) {
-        return exchangeRateService.convert(cur, amount, date);
+        //todo: fix Bad request: Unable to get exchange rates for invalid currency code: USD
+        return convertService.convert(cur, amount, date);
     }
 }
