@@ -8,13 +8,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+import static com.crewmeister.cmcodingchallenge.constant.AppConstants.DATE_FORMATTER;
+import static com.crewmeister.cmcodingchallenge.constant.AppConstants.DATE_TIME_FORMATTER;
+
 public class DateParsingHelper {
-
-    //todo: change local date time to ISO
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
-
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-
     private static final Logger logger = LoggerFactory.getLogger(DateParsingHelper.class);
 
     public static LocalDate parseDate(String date) {
@@ -43,22 +40,8 @@ public class DateParsingHelper {
         return parsedDateTime;
     }
 
-    public static boolean isNullOrFutureDate(LocalDateTime date) {
-        return date == null || date.isAfter(LocalDateTime.now());
-    }
-
-    public static boolean isNullOrFutureDate(String date) {
-        if (date == null || date.isBlank()) {
-            return true;
-        }
-
-        try {
-            LocalDate parsedDate = LocalDate.parse(date, DATE_FORMATTER);
-            return parsedDate.isAfter(LocalDate.now());
-
-        } catch (DateTimeParseException e) {
-            return true;
-        }
+    public static boolean isNullOrFutureDate(LocalDate date) {
+        return date == null || date.isAfter(LocalDate.now());
     }
 
     public static String getYesterdayDateAsString() {

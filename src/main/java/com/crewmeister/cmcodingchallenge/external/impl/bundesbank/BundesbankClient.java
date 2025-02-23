@@ -23,6 +23,11 @@ import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.crewmeister.cmcodingchallenge.constant.AppConstants.DETAIL_PARAM;
+import static com.crewmeister.cmcodingchallenge.constant.AppConstants.END_PERIOD_PARAM;
+import static com.crewmeister.cmcodingchallenge.constant.AppConstants.FORMAT_PARAM;
+import static com.crewmeister.cmcodingchallenge.constant.AppConstants.START_PERIOD_PARAM;
+
 
 @Component
 public class BundesbankClient implements ExternalQuoteClient {
@@ -49,17 +54,12 @@ public class BundesbankClient implements ExternalQuoteClient {
 
         for(ExchangingRateList exchangingRateList: exchangingRateLists) {
             // use today quotes if they already published
-            if (exchangingRateList.getDate().toLocalDate().isEqual(LocalDate.now())) {
+            if (exchangingRateList.getDate().isEqual(LocalDate.now())) {
                 return exchangingRateList;
             }
 
             // otherwise use yesterday quotes
-            if (exchangingRateList.getDate().toLocalDate().isEqual(LocalDate.now().minusDays(1))) {
-                return exchangingRateList;
-            }
-
-            // in case if it's a sunday, use friday's quotes
-            if (exchangingRateList.getDate().toLocalDate().isEqual(LocalDate.now().minusDays(2))) {
+            if (exchangingRateList.getDate().isEqual(LocalDate.now().minusDays(1))) {
                 return exchangingRateList;
             }
         }
@@ -84,12 +84,12 @@ public class BundesbankClient implements ExternalQuoteClient {
     private HttpGet buildIntervalRequest(String startDate, String endDate) {
         HttpGet request = new HttpGet(configuration.getServiceUrl() + configuration.getEndpoint());
         request.setHeader(HttpHeaders.ACCEPT_LANGUAGE, "en-US");
-        request.setHeader(HttpHeaders.ACCEPT, "text/csv");
 
         URIBuilder uriBuilder = new URIBuilder(request.getURI())
-                .addParameter("detail", "dataonly")
-                .addParameter("startPeriod", startDate)
-                .addParameter("endPeriod", endDate);
+                .addParameter(FORMAT_PARAM, "csv")
+                .addParameter(DETAIL_PARAM, "dataonly")
+                .addParameter(START_PERIOD_PARAM, startDate)
+                .addParameter(END_PERIOD_PARAM, endDate);
 
         try {
             request.setURI(uriBuilder.build());

@@ -1,7 +1,5 @@
 package com.crewmeister.cmcodingchallenge.external;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 import java.io.InputStream;
 import java.util.List;
 

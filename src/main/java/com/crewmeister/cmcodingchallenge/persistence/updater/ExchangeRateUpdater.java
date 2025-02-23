@@ -1,5 +1,6 @@
 package com.crewmeister.cmcodingchallenge.persistence.updater;
 
+import com.crewmeister.cmcodingchallenge.configuration.ExchangeRateUpdaterConfiguration;
 import com.crewmeister.cmcodingchallenge.external.CurrencyQuote;
 import com.crewmeister.cmcodingchallenge.external.ExchangingRateList;
 import com.crewmeister.cmcodingchallenge.external.ExternalQuoteClient;
@@ -17,7 +18,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +50,7 @@ public class ExchangeRateUpdater {
     }
 
     @Async
-    @Scheduled(cron = "0 * * * * *") //"2025-02-20T14:58:37.626Z",
+    @Scheduled(cron = "${client.data.update.cron.expression}")
     public void updateDailyExchangeRates() {
         logger.info("Start to update daily currency quotes");
         ExchangingRateList receivedList = externalQuoteClient.getCurrencyQuotesForToday();
@@ -66,7 +66,7 @@ public class ExchangeRateUpdater {
         LocalDate endDate = LocalDate.now();
         List<ExchangingRateList> exchangingRateLists = externalQuoteClient.getCurrencyQuotesForInterval(startDate, endDate);
 
-        logger.info("Receive data from external service for {} to {}", startDate, endDate);
+        logger.info("Receive {} batches from external service for {} to {}", exchangingRateLists.size(), startDate, endDate);
         for(ExchangingRateList exchangingRateList: exchangingRateLists) {
             updateExchangeRates(exchangingRateList);
         }
@@ -74,20 +74,17 @@ public class ExchangeRateUpdater {
     }
 
     private void updateExchangeRates(ExchangingRateList exchangingRateList) {
-        LocalDateTime date = exchangingRateList.getDate();
-
         List<ExchangeRate> exchangeRatesForUpdate = new ArrayList<>(exchangingRateList.getCurrencyQuotes().size());
 
         for(CurrencyQuote quote: exchangingRateList.getCurrencyQuotes()) {
             exchangeRatesForUpdate.add(
                     ExchangeRate.builder()
                             .rate(quote.getExchangeRate())
-                            .date(date)
+                            .date(exchangingRateList.getDate())
                             .currency(getOrCreateCurrency(quote.getCurrencyCode()))
                             .build()
             );
         }
-
         exchangeRateService.saveAll(exchangeRatesForUpdate);
     }
 

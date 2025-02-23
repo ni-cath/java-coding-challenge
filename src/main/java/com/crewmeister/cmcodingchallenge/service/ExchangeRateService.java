@@ -2,7 +2,7 @@ package com.crewmeister.cmcodingchallenge.service;
 
 import com.crewmeister.cmcodingchallenge.persistence.entity.ExchangeRate;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -21,7 +21,7 @@ public interface ExchangeRateService {
      * @param currencyCode  currency code
      * @return optional value
      */
-    Optional<ExchangeRate> getExchangeRates(LocalDateTime date, String currencyCode);
+    Optional<ExchangeRate> getExchangeRates(LocalDate date, String currencyCode);
 
     /**
      * Saving all exchanging rates to DB

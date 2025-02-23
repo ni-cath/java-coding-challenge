@@ -3,14 +3,14 @@ package com.crewmeister.cmcodingchallenge.external;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Collection;
 
 @Data
 @AllArgsConstructor
 public class ExchangingRateList {
 
-    private LocalDateTime date;
+    private LocalDate date;
 
     private Collection<CurrencyQuote> currencyQuotes;
 }

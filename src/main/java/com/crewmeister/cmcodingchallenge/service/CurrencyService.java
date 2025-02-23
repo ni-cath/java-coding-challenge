@@ -20,19 +20,6 @@ public interface CurrencyService {
     Optional<Currency> getCurrency(String currencyCode);
 
     /**
-     * Try to get currency by code, crate it if necessary
-     * @param currencyCode currency code
-     * @return created or found value
-     */
-    Currency getOrCreateCurrency(String currencyCode);
-
-    /**
-     * Save all currencies
-     * @param currencies currencies to save
-     */
-    void saveAll(Iterable<Currency> currencies);
-
-    /**
      * Save currency
      * @param currency to save
      */

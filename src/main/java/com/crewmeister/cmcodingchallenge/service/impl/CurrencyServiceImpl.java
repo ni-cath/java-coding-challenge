@@ -34,25 +34,6 @@ public class CurrencyServiceImpl implements CurrencyService {
     }
 
     @Override
-    public Currency getOrCreateCurrency(String currencyCode) {
-        Optional<Currency> currency = currencyRepository.findByCurrencyCode(currencyCode);
-
-        if (currency.isPresent()) {
-            return currency.get();
-        }
-
-        Currency newCurrency = Currency.builder().currencyCode(currencyCode).build();
-        currencyRepository.save(newCurrency);
-
-        return newCurrency;
-    }
-
-    @Override
-    public void saveAll(Iterable<Currency> currencies) {
-        currencyRepository.saveAll(currencies);
-    }
-
-    @Override
     public void save(Currency currency) {
         currencyRepository.save(currency);
     }

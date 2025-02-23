@@ -1,8 +1,5 @@
 package com.crewmeister.cmcodingchallenge.external;
 
-import com.crewmeister.cmcodingchallenge.configuration.ExternalServiceConfiguration;
-import org.apache.tomcat.jni.Local;
-
 import java.time.LocalDate;
 import java.util.List;
 

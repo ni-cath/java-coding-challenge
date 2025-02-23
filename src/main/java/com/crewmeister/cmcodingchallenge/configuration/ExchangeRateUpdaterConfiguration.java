@@ -1,4 +1,4 @@
-package com.crewmeister.cmcodingchallenge.persistence.updater;
+package com.crewmeister.cmcodingchallenge.configuration;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;

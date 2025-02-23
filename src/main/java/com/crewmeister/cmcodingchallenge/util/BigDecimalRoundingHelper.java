@@ -4,11 +4,9 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
+import static com.crewmeister.cmcodingchallenge.constant.AppConstants.PRECISION;
+
 public class BigDecimalRoundingHelper {
-
-    //todo: make configurable
-    private static final int PRECISION = 4;
-
     public static BigDecimal round(BigDecimal num) {
         return num.setScale(PRECISION, RoundingMode.HALF_EVEN);
     }
