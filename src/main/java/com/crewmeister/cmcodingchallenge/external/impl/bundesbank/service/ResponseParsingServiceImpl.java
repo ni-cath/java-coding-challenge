@@ -1,10 +1,10 @@
-package com.crewmeister.cmcodingchallenge.external.bundesbank.service;
+package com.crewmeister.cmcodingchallenge.external.impl.bundesbank.service;
 
 import com.crewmeister.cmcodingchallenge.exception.BundesbankClientException;
 import com.crewmeister.cmcodingchallenge.external.CurrencyQuote;
 import com.crewmeister.cmcodingchallenge.external.ExchangingRateList;
 import com.crewmeister.cmcodingchallenge.external.ResponseParsingService;
-import com.crewmeister.cmcodingchallenge.external.bundesbank.response.*;
+import com.crewmeister.cmcodingchallenge.external.impl.bundesbank.response.*;
 import com.crewmeister.cmcodingchallenge.util.DateParsingHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -102,10 +102,16 @@ public class ResponseParsingServiceImpl implements ResponseParsingService {
                 continue;
             }
 
-            for(Map.Entry<String, Object[]> rate: dataSetEntry.getValue().getObservations().entrySet()) {
-                String rateValue = (String) rate.getValue()[0];
+            BundesbankCurrencyValue currency = currencyValueIterator.next();
 
-                CurrencyQuote quote = new CurrencyQuote(currencyValueIterator.next().getId(), new BigDecimal(rateValue));
+            for(Map.Entry<String, Object[]> rate: dataSetEntry.getValue().getObservations().entrySet()) {
+                if (rate == null || rate.getValue() == null || rate.getValue()[0] == null) {
+                    continue;
+                }
+
+                String rateValue = (String) rate.getValue()[0];
+                CurrencyQuote quote = new CurrencyQuote(currency.getId(), new BigDecimal(rateValue));
+
                 currencyQuotes.add(quote);
             }
         }

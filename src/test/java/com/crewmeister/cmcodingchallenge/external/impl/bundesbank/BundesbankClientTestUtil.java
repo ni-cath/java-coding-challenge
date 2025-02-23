@@ -1,4 +1,4 @@
-package com.crewmeister.cmcodingchallenge.external.bundesbank;
+package com.crewmeister.cmcodingchallenge.external.impl.bundesbank;
 
 public class BundesbankClientTestUtil {
 

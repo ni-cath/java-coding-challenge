@@ -1,5 +1,9 @@
 package com.crewmeister.cmcodingchallenge.external;
 
+import com.crewmeister.cmcodingchallenge.configuration.ExternalServiceConfiguration;
+import org.apache.tomcat.jni.Local;
+
+import java.time.LocalDate;
 import java.util.List;
 
 public interface ExternalQuoteClient {
@@ -11,8 +15,10 @@ public interface ExternalQuoteClient {
     ExchangingRateList getCurrencyQuotesForToday();
 
     /**
-     * retrieve all currency quotes for all supported currencies by external service
+     * retrieve all currency quotes for all supported currencies by external service for the time interval
+     * @param startDate start date
+     * @param endDate   end date
      * @return currency quotes from the earliest date
      */
-    List<ExchangingRateList> getCurrencyQuotesFromEarliestDate();
+    List<ExchangingRateList> getCurrencyQuotesForInterval(LocalDate startDate, LocalDate endDate);
 }

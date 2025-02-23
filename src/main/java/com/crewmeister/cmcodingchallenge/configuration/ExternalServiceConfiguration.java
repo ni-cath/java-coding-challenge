@@ -19,7 +19,4 @@ public class ExternalServiceConfiguration {
 
     @Value("${client.retry.timeout.milliseconds:  #{10000}}")
     private int timeoutMs;
-
-    @Value("${client.quotes.service.earliest.date}")
-    private String startDate;
 }

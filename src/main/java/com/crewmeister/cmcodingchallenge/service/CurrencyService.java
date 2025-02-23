@@ -31,4 +31,10 @@ public interface CurrencyService {
      * @param currencies currencies to save
      */
     void saveAll(Iterable<Currency> currencies);
+
+    /**
+     * Save currency
+     * @param currency to save
+     */
+    void save(Currency currency);
 }

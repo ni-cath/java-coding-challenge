@@ -51,4 +51,9 @@ public class CurrencyServiceImpl implements CurrencyService {
     public void saveAll(Iterable<Currency> currencies) {
         currencyRepository.saveAll(currencies);
     }
+
+    @Override
+    public void save(Currency currency) {
+        currencyRepository.save(currency);
+    }
 }

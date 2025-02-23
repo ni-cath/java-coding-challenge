@@ -1,4 +1,4 @@
-package com.crewmeister.cmcodingchallenge.external.bundesbank;
+package com.crewmeister.cmcodingchallenge.external.impl.bundesbank;
 
 import com.crewmeister.cmcodingchallenge.configuration.ExternalServiceConfiguration;
 import com.crewmeister.cmcodingchallenge.exception.BundesbankClientException;
@@ -24,7 +24,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.crewmeister.cmcodingchallenge.util.DateParsingHelper.isNullOrFutureDate;
 
 @Component
 public class BundesbankClient implements ExternalQuoteClient {
@@ -59,34 +58,39 @@ public class BundesbankClient implements ExternalQuoteClient {
             if (exchangingRateList.getDate().toLocalDate().isEqual(LocalDate.now().minusDays(1))) {
                 return exchangingRateList;
             }
+
+            // in case if it's a sunday, use friday's quotes
+            if (exchangingRateList.getDate().toLocalDate().isEqual(LocalDate.now().minusDays(2))) {
+                return exchangingRateList;
+            }
         }
 
         throw new BundesbankClientException("No actual quotes received");
     }
 
     @Override
-    public List<ExchangingRateList> getCurrencyQuotesFromEarliestDate() {
-        return sendRequest(buildAllDataRequest());
+    public List<ExchangingRateList> getCurrencyQuotesForInterval(LocalDate startDate, LocalDate endDate) {
+        return sendRequest(
+                buildIntervalRequest(
+                        DateParsingHelper.getDateAsString(startDate),
+                        DateParsingHelper.getDateAsString(endDate)
+                )
+        );
     }
 
     private HttpGet buildDailyRequest() {
-        return buildAllDataRequest(true);
+        return buildIntervalRequest(DateParsingHelper.getYesterdayDateAsString(), DateParsingHelper.getTodayDateAsString());
     }
 
-    private HttpGet buildAllDataRequest() {
-        return buildAllDataRequest(false);
-    }
-
-    private HttpGet buildAllDataRequest(boolean isDaily) {
+    private HttpGet buildIntervalRequest(String startDate, String endDate) {
         HttpGet request = new HttpGet(configuration.getServiceUrl() + configuration.getEndpoint());
         request.setHeader(HttpHeaders.ACCEPT_LANGUAGE, "en-US");
-
-        String startDate = isDaily || isNullOrFutureDate(configuration.getStartDate()) ? DateParsingHelper.getYesterdayDateAsString() : configuration.getStartDate();
 
         URIBuilder uriBuilder = new URIBuilder(request.getURI())
                 .addParameter("format", "application_json")
                 .addParameter("detail", "dataonly")
-                .addParameter("startPeriod", startDate);
+                .addParameter("startPeriod", startDate)
+                .addParameter("endPeriod", endDate);
 
         try {
             request.setURI(uriBuilder.build());

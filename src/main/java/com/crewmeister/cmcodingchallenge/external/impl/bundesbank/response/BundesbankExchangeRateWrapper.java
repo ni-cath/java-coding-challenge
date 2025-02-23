@@ -1,4 +1,4 @@
-package com.crewmeister.cmcodingchallenge.external.bundesbank.response;
+package com.crewmeister.cmcodingchallenge.external.impl.bundesbank.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
