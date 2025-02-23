@@ -14,13 +14,12 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -85,9 +84,9 @@ public class BundesbankClient implements ExternalQuoteClient {
     private HttpGet buildIntervalRequest(String startDate, String endDate) {
         HttpGet request = new HttpGet(configuration.getServiceUrl() + configuration.getEndpoint());
         request.setHeader(HttpHeaders.ACCEPT_LANGUAGE, "en-US");
+        request.setHeader(HttpHeaders.ACCEPT, "text/csv");
 
         URIBuilder uriBuilder = new URIBuilder(request.getURI())
-                .addParameter("format", "application_json")
                 .addParameter("detail", "dataonly")
                 .addParameter("startPeriod", startDate)
                 .addParameter("endPeriod", endDate);
@@ -105,21 +104,18 @@ public class BundesbankClient implements ExternalQuoteClient {
         try(CloseableHttpClient httpClient = httpClientHelper.getHttpClientWithTimeoutAndRetries()) {
             CloseableHttpResponse response = httpClient.execute(request);
 
-            int statusCode = response.getStatusLine().getStatusCode();
-            String responseBody = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
-
-            if (statusCode != HttpStatus.SC_OK) {
-                throw new BundesbankClientException("Receive unsuccessful response from Bundesbank service: " + responseBody);
+            if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                throw new BundesbankClientException("Receive unsuccessful response from Bundesbank service: " + response.getEntity().toString());
             }
 
-            return parse(responseBody);
+            return parse(response.getEntity().getContent());
 
         } catch (IOException e) {
             throw new BundesbankClientException("Error occurred when trying to retrieve currency quotes from Bundesbank service: " + e.getMessage());
         }
     }
 
-    private List<ExchangingRateList> parse(String json) throws JsonProcessingException {
-        return responseParsingService.parse(json);
+    private List<ExchangingRateList> parse(InputStream stream) throws JsonProcessingException {
+        return responseParsingService.parse(stream);
     }
 }
