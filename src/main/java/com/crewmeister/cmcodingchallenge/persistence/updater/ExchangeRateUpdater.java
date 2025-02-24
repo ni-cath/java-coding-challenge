@@ -1,9 +1,9 @@
 package com.crewmeister.cmcodingchallenge.persistence.updater;
 
-import com.crewmeister.cmcodingchallenge.configuration.ExchangeRateUpdaterConfiguration;
-import com.crewmeister.cmcodingchallenge.external.CurrencyQuote;
-import com.crewmeister.cmcodingchallenge.external.ExchangingRateList;
-import com.crewmeister.cmcodingchallenge.external.ExternalQuoteClient;
+import com.crewmeister.cmcodingchallenge.config.ExchangeRateUpdaterConfiguration;
+import com.crewmeister.cmcodingchallenge.external.dto.CurrencyQuote;
+import com.crewmeister.cmcodingchallenge.external.dto.ExchangingRateList;
+import com.crewmeister.cmcodingchallenge.external.client.ExternalQuoteClient;
 import com.crewmeister.cmcodingchallenge.persistence.entity.Currency;
 import com.crewmeister.cmcodingchallenge.persistence.entity.ExchangeRate;
 import com.crewmeister.cmcodingchallenge.service.CurrencyService;

@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-import static com.crewmeister.cmcodingchallenge.constant.AppConstants.DATE_FORMATTER;
-import static com.crewmeister.cmcodingchallenge.constant.AppConstants.DATE_TIME_FORMATTER;
+import static com.crewmeister.cmcodingchallenge.constants.AppConstants.DATE_FORMATTER;
+import static com.crewmeister.cmcodingchallenge.constants.AppConstants.DATE_TIME_FORMATTER;
 
 public class DateParsingHelper {
     private static final Logger logger = LoggerFactory.getLogger(DateParsingHelper.class);

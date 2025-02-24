@@ -1,7 +1,7 @@
 package com.crewmeister.cmcodingchallenge.service.impl;
 
 import com.crewmeister.cmcodingchallenge.persistence.entity.Currency;
-import com.crewmeister.cmcodingchallenge.repository.CurrencyRepository;
+import com.crewmeister.cmcodingchallenge.persistence.repository.CurrencyRepository;
 import com.crewmeister.cmcodingchallenge.service.CurrencyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

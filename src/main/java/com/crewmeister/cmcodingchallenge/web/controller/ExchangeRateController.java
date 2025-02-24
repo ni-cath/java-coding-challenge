@@ -1,6 +1,6 @@
 package com.crewmeister.cmcodingchallenge.web.controller;
 
-import com.crewmeister.cmcodingchallenge.constant.AppConstants;
+import com.crewmeister.cmcodingchallenge.constants.AppConstants;
 import com.crewmeister.cmcodingchallenge.web.dto.CurrencyConversionRate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

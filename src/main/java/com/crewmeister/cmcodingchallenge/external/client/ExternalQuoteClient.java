@@ -1,4 +1,6 @@
-package com.crewmeister.cmcodingchallenge.external;
+package com.crewmeister.cmcodingchallenge.external.client;
+
+import com.crewmeister.cmcodingchallenge.external.dto.ExchangingRateList;
 
 import java.time.LocalDate;
 import java.util.List;

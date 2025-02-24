@@ -1,4 +1,4 @@
-package com.crewmeister.cmcodingchallenge.external;
+package com.crewmeister.cmcodingchallenge.external.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

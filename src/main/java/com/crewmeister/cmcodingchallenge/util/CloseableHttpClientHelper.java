@@ -1,6 +1,6 @@
 package com.crewmeister.cmcodingchallenge.util;
 
-import com.crewmeister.cmcodingchallenge.configuration.ExternalServiceConfiguration;
+import com.crewmeister.cmcodingchallenge.config.ExternalServiceConfiguration;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;

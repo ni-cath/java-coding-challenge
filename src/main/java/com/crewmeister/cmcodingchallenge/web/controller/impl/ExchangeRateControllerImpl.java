@@ -6,11 +6,10 @@ import com.crewmeister.cmcodingchallenge.service.CurrencyService;
 import com.crewmeister.cmcodingchallenge.service.ExchangeRateService;
 import com.crewmeister.cmcodingchallenge.util.DateParsingHelper;
 import com.crewmeister.cmcodingchallenge.web.controller.ExchangeRateController;
-import com.crewmeister.cmcodingchallenge.web.controller.mapper.CurrencyConversionRateMapper;
+import com.crewmeister.cmcodingchallenge.web.mapper.CurrencyConversionRateMapper;
 import com.crewmeister.cmcodingchallenge.web.dto.CurrencyConversionRate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 

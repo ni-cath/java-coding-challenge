@@ -1,4 +1,4 @@
-package com.crewmeister.cmcodingchallenge.repository;
+package com.crewmeister.cmcodingchallenge.persistence.repository;
 
 import com.crewmeister.cmcodingchallenge.persistence.entity.Currency;
 import com.crewmeister.cmcodingchallenge.persistence.entity.ExchangeRate;

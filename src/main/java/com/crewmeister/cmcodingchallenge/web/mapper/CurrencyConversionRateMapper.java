@@ -1,4 +1,4 @@
-package com.crewmeister.cmcodingchallenge.web.controller.mapper;
+package com.crewmeister.cmcodingchallenge.web.mapper;
 
 import com.crewmeister.cmcodingchallenge.persistence.entity.ExchangeRate;
 import com.crewmeister.cmcodingchallenge.web.dto.CurrencyConversionRate;

@@ -1,4 +1,4 @@
-package com.crewmeister.cmcodingchallenge.constant;
+package com.crewmeister.cmcodingchallenge.constants;
 
 import java.time.format.DateTimeFormatter;
 

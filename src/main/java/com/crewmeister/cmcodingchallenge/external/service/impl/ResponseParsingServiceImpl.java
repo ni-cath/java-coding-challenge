@@ -1,8 +1,8 @@
-package com.crewmeister.cmcodingchallenge.external.impl.bundesbank;
+package com.crewmeister.cmcodingchallenge.external.service.impl;
 
-import com.crewmeister.cmcodingchallenge.external.CurrencyQuote;
-import com.crewmeister.cmcodingchallenge.external.ExchangingRateList;
-import com.crewmeister.cmcodingchallenge.external.ResponseParsingService;
+import com.crewmeister.cmcodingchallenge.external.dto.CurrencyQuote;
+import com.crewmeister.cmcodingchallenge.external.dto.ExchangingRateList;
+import com.crewmeister.cmcodingchallenge.external.service.ResponseParsingService;
 import com.crewmeister.cmcodingchallenge.util.DateParsingHelper;
 import org.springframework.stereotype.Component;
 

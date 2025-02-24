@@ -1,4 +1,6 @@
-package com.crewmeister.cmcodingchallenge.external;
+package com.crewmeister.cmcodingchallenge.external.service;
+
+import com.crewmeister.cmcodingchallenge.external.dto.ExchangingRateList;
 
 import java.io.InputStream;
 import java.util.List;

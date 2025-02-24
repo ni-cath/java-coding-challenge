@@ -1,10 +1,10 @@
-package com.crewmeister.cmcodingchallenge.external.impl.bundesbank;
+package com.crewmeister.cmcodingchallenge.external.client.impl;
 
-import com.crewmeister.cmcodingchallenge.configuration.ExternalServiceConfiguration;
+import com.crewmeister.cmcodingchallenge.config.ExternalServiceConfiguration;
 import com.crewmeister.cmcodingchallenge.exception.BundesbankClientException;
-import com.crewmeister.cmcodingchallenge.external.ExchangingRateList;
-import com.crewmeister.cmcodingchallenge.external.ExternalQuoteClient;
-import com.crewmeister.cmcodingchallenge.external.ResponseParsingService;
+import com.crewmeister.cmcodingchallenge.external.dto.ExchangingRateList;
+import com.crewmeister.cmcodingchallenge.external.client.ExternalQuoteClient;
+import com.crewmeister.cmcodingchallenge.external.service.ResponseParsingService;
 import com.crewmeister.cmcodingchallenge.util.CloseableHttpClientHelper;
 import com.crewmeister.cmcodingchallenge.util.DateParsingHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -23,10 +23,10 @@ import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.crewmeister.cmcodingchallenge.constant.AppConstants.DETAIL_PARAM;
-import static com.crewmeister.cmcodingchallenge.constant.AppConstants.END_PERIOD_PARAM;
-import static com.crewmeister.cmcodingchallenge.constant.AppConstants.FORMAT_PARAM;
-import static com.crewmeister.cmcodingchallenge.constant.AppConstants.START_PERIOD_PARAM;
+import static com.crewmeister.cmcodingchallenge.constants.AppConstants.DETAIL_PARAM;
+import static com.crewmeister.cmcodingchallenge.constants.AppConstants.END_PERIOD_PARAM;
+import static com.crewmeister.cmcodingchallenge.constants.AppConstants.FORMAT_PARAM;
+import static com.crewmeister.cmcodingchallenge.constants.AppConstants.START_PERIOD_PARAM;
 
 
 @Component
