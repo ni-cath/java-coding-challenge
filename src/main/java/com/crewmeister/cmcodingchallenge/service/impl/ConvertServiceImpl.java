@@ -29,29 +29,23 @@ public class ConvertServiceImpl implements ConvertService {
     }
 
     @Override
-    public Double convert(String targetCurrency, Double amount, String date) {
-        LocalDate parsedDate = LocalDate.now();
-
-        if (date != null && !date.isBlank()) {
-            parsedDate = DateParsingHelper.parseDate(date);
-        }
-
-        if (DateParsingHelper.isNullOrFutureDate(parsedDate)) {
+    public Double convert(String targetCurrency, Double amount, LocalDate date) {
+        if (DateParsingHelper.isNullOrFutureDate(date)) {
             logger.warn("Invalid request date param {}", date);
             throw new InvalidDateParamValueException("Unable to convert money at exchange rate for invalid date: " + date);
         }
 
-        BigDecimal convertedAmount = convert(targetCurrency, new BigDecimal(amount), parsedDate);
-        return BigDecimalRoundingHelper.round(convertedAmount).doubleValue();
-    }
-
-    private BigDecimal convert(String targetCurrency, BigDecimal amount, LocalDate date) {
-        Optional<ExchangeRate> rateOpt = exchangeRateService.getExchangeRates(date, targetCurrency);
+        Optional<ExchangeRate> rateOpt = exchangeRateService.getExchangeRate(date, targetCurrency);
 
         if (rateOpt.isEmpty()) {
             throw new NotFoundRateException("Exchange rate not found for " + targetCurrency + " on " + date);
         }
 
-        return amount.divide(BigDecimal.valueOf(rateOpt.get().getRate()), BigDecimalRoundingHelper.getMathContext());
+        BigDecimal convertedAmount = convert(BigDecimal.valueOf(amount), BigDecimal.valueOf(rateOpt.get().getRate()));
+        return BigDecimalRoundingHelper.round(convertedAmount).doubleValue();
+    }
+
+    private BigDecimal convert(BigDecimal amount, BigDecimal rate) {
+        return amount.divide(rate, BigDecimalRoundingHelper.getMathContext());
     }
 }

@@ -14,7 +14,8 @@ public interface ExchangeRateController {
 
     @GetMapping("/rates")
     @ResponseBody
-    Collection<CurrencyConversionRate> getAllRates(@RequestParam(required = false) String date);
+    Iterable<CurrencyConversionRate> getAllRates(@RequestParam(required = false) String date, @RequestParam(required = false) String cur,
+                                                 @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "30") int size);
 
     @GetMapping("/currencies")
     @ResponseBody
