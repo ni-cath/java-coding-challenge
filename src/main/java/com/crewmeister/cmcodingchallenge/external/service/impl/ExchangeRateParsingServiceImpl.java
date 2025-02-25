@@ -1,9 +1,9 @@
 package com.crewmeister.cmcodingchallenge.external.service.impl;
 
 import com.crewmeister.cmcodingchallenge.external.dto.CurrencyQuote;
-import com.crewmeister.cmcodingchallenge.external.dto.ExchangingRateList;
-import com.crewmeister.cmcodingchallenge.external.service.ResponseParsingService;
-import com.crewmeister.cmcodingchallenge.util.DateParsingHelper;
+import com.crewmeister.cmcodingchallenge.external.dto.ExchangeRateResponse;
+import com.crewmeister.cmcodingchallenge.external.service.ExchangeRateParsingService;
+import com.crewmeister.cmcodingchallenge.helper.DateParsingHelper;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -19,25 +19,25 @@ import java.util.Collection;
 import java.util.List;
 
 @Component
-public class ResponseParsingServiceImpl implements ResponseParsingService {
+public class ExchangeRateParsingServiceImpl implements ExchangeRateParsingService {
 
     private final DateTimeFormatter DT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Override
-    public List<ExchangingRateList> parse(InputStream stream) {
-        List<ExchangingRateList> exchangingRateLists;
+    public List<ExchangeRateResponse> parse(InputStream stream) {
+        List<ExchangeRateResponse> exchangeRateResponses;
 
         try(BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))) {
-            exchangingRateLists = parse(reader);
+            exchangeRateResponses = parse(reader);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        return exchangingRateLists;
+        return exchangeRateResponses;
     }
 
-    private List<ExchangingRateList> parse(BufferedReader reader) throws IOException {
+    private List<ExchangeRateResponse> parse(BufferedReader reader) throws IOException {
         String headerLine = reader.readLine();
         if (headerLine == null) return List.of();
 
@@ -59,7 +59,7 @@ public class ResponseParsingServiceImpl implements ResponseParsingService {
         // skip the line with last update
         String lastUpdated = reader.readLine();
 
-        List<ExchangingRateList> exchangingRateLists = new ArrayList<>();
+        List<ExchangeRateResponse> exchangeRateResponses = new ArrayList<>();
 
         // Read each row and parse exchange rates
         String line;
@@ -86,10 +86,10 @@ public class ResponseParsingServiceImpl implements ResponseParsingService {
 
             // since the csv file with all data provides only date save only the date
             // change getting the all data to provide time param if necessary,
-            exchangingRateLists.add(new ExchangingRateList(date, currencyQuotes));
+            exchangeRateResponses.add(new ExchangeRateResponse(date, currencyQuotes));
         }
 
-        return exchangingRateLists;
+        return exchangeRateResponses;
     }
 
     private boolean isWeekend(LocalDate date) {

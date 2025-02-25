@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 @Data
 @Builder
-public class CurrencyConversionRate {
+public class ExchangeRateDto {
 
     private String currencyCode;
 

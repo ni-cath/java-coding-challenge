@@ -1,15 +1,15 @@
 package com.crewmeister.cmcodingchallenge.service.impl;
 
-import com.crewmeister.cmcodingchallenge.exception.InvalidDateParamValueException;
-import com.crewmeister.cmcodingchallenge.exception.NotFoundCurrencyException;
-import com.crewmeister.cmcodingchallenge.exception.NotFoundRateException;
-import com.crewmeister.cmcodingchallenge.persistence.spec.ExchangeRateSpecifications;
+import com.crewmeister.cmcodingchallenge.common.exception.InvalidDateException;
+import com.crewmeister.cmcodingchallenge.common.exception.CurrencyNotFoundException;
+import com.crewmeister.cmcodingchallenge.common.exception.ExchangeRateNotFoundException;
+import com.crewmeister.cmcodingchallenge.persistence.spec.ExchangeRateSpec;
 import com.crewmeister.cmcodingchallenge.persistence.entity.Currency;
 import com.crewmeister.cmcodingchallenge.persistence.entity.ExchangeRate;
 import com.crewmeister.cmcodingchallenge.persistence.repository.ExchangeRateRepository;
 import com.crewmeister.cmcodingchallenge.service.CurrencyService;
 import com.crewmeister.cmcodingchallenge.service.ExchangeRateService;
-import com.crewmeister.cmcodingchallenge.util.DateParsingHelper;
+import com.crewmeister.cmcodingchallenge.helper.DateParsingHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,11 +58,11 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
         // if the currency code is provided, it should be valid
         Currency currency = currencyCode == null ? null : getCurrency(currencyCode);
         Specification<ExchangeRate> spec = Specification
-                .where(ExchangeRateSpecifications.exchangeRateForCurrency(currency))
-                .and(ExchangeRateSpecifications.exchangeRateForDate(date));
+                .where(ExchangeRateSpec.exchangeRateForCurrency(currency))
+                .and(ExchangeRateSpec.exchangeRateForDate(date));
 
         if (exchangeRateRepository.count(spec) == 0) {
-            throw new NotFoundRateException("Unable to get exchange rates for " + currencyCode + " currency for " + date);
+            throw new ExchangeRateNotFoundException("Unable to get exchange rates for " + currencyCode + " currency for " + date);
         }
 
         return exchangeRateRepository.findAll(spec, PageRequest.of(page, size));
@@ -81,7 +81,7 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
     private void validateDate(LocalDate date) {
         if (DateParsingHelper.isNullOrFutureDate(date)) {
             logger.warn("Invalid date param {}", date);
-            throw new InvalidDateParamValueException("Unable to get exchange rates for invalid date: " + date);
+            throw new InvalidDateException("Unable to get exchange rates for invalid date: " + date);
         }
     }
 
@@ -90,7 +90,7 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
 
         if (currency.isEmpty()) {
             logger.warn("Invalid currency code param {}", currencyCode);
-            throw new NotFoundCurrencyException("Unable to get exchange rates for invalid currency code: " + currencyCode);
+            throw new CurrencyNotFoundException("Unable to get exchange rates for invalid currency code: " + currencyCode);
         }
 
         return currency.get();

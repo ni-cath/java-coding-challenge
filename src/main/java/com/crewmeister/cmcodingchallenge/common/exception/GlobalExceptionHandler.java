@@ -1,4 +1,4 @@
-package com.crewmeister.cmcodingchallenge.exception;
+package com.crewmeister.cmcodingchallenge.common.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -9,19 +9,19 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(InvalidDateParamValueException.class)
+    @ExceptionHandler(InvalidDateException.class)
     public String handleInvalidDateParamValue(Exception e) {
         return "Bad request: " + e.getMessage();
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NotFoundCurrencyException.class)
+    @ExceptionHandler(CurrencyNotFoundException.class)
     public String handleNotFoundCurrencyValue(Exception e) {
         return "Currency was not found: " + e.getMessage();
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NotFoundRateException.class)
+    @ExceptionHandler(ExchangeRateNotFoundException.class)
     public String handleNotFoundRateValue(Exception e) {
         return "Rate was not found: " + e.getMessage();
     }

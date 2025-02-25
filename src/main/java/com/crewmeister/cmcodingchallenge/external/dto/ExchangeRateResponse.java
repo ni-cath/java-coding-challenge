@@ -8,7 +8,7 @@ import java.util.Collection;
 
 @Data
 @AllArgsConstructor
-public class ExchangingRateList {
+public class ExchangeRateResponse {
 
     private LocalDate date;
 

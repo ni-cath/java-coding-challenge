@@ -6,7 +6,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
 
-public class ExchangeRateSpecifications {
+public class ExchangeRateSpec {
 
     public static Specification<ExchangeRate> exchangeRateForCurrency(Currency currency) {
         return (root, query, cb) -> currency == null ? null : cb.equal(root.get("currency"), currency);

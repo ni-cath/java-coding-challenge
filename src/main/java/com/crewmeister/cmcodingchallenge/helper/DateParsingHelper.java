@@ -1,4 +1,4 @@
-package com.crewmeister.cmcodingchallenge.util;
+package com.crewmeister.cmcodingchallenge.helper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-import static com.crewmeister.cmcodingchallenge.constants.AppConstants.DATE_FORMATTER;
-import static com.crewmeister.cmcodingchallenge.constants.AppConstants.DATE_TIME_FORMATTER;
+import static com.crewmeister.cmcodingchallenge.common.constants.AppConstants.DATE_FORMATTER;
+import static com.crewmeister.cmcodingchallenge.common.constants.AppConstants.DATE_TIME_FORMATTER;
 
 public class DateParsingHelper {
     private static final Logger logger = LoggerFactory.getLogger(DateParsingHelper.class);

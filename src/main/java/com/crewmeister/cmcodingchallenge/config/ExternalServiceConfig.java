@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @Getter
-public class ExternalServiceConfiguration {
+public class ExternalServiceConfig {
 
     @Value("${client.quotes.service.url}")
     private String serviceUrl;

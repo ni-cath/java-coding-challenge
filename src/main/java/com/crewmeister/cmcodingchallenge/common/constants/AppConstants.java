@@ -1,9 +1,11 @@
-package com.crewmeister.cmcodingchallenge.constants;
+package com.crewmeister.cmcodingchallenge.common.constants;
 
 import java.time.format.DateTimeFormatter;
 
 public class AppConstants {
-    public static final String V1 = "/api/v1";
+    public static final String BASE_API = "/api/v1";
+
+    public static final String EXCHANGE_RATE = BASE_API + "/exchange-rates";
 
     public static final int PRECISION = 4;
 

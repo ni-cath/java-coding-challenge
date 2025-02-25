@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @Getter
-public class ExchangeRateUpdaterConfiguration {
+public class ExchangeRateUpdaterConfig {
 
     @Value("${client.quotes.service.earliest.date}")
     private String earliestDate;

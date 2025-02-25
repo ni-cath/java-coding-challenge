@@ -1,6 +1,6 @@
-package com.crewmeister.cmcodingchallenge.util;
+package com.crewmeister.cmcodingchallenge.helper;
 
-import com.crewmeister.cmcodingchallenge.config.ExternalServiceConfiguration;
+import com.crewmeister.cmcodingchallenge.config.ExternalServiceConfig;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class CloseableHttpClientHelper {
 
-    private final ExternalServiceConfiguration configuration;
+    private final ExternalServiceConfig configuration;
 
     @Autowired
-    public CloseableHttpClientHelper(ExternalServiceConfiguration configuration) {
+    public CloseableHttpClientHelper(ExternalServiceConfig configuration) {
         this.configuration = configuration;
     }
 
