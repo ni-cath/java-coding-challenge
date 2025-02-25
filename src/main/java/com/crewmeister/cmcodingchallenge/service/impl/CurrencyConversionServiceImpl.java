@@ -29,8 +29,9 @@ public class CurrencyConversionServiceImpl implements CurrencyConversionService 
 
     @Override
     public Double convert(String targetCurrency, Double amount, LocalDate date) {
-        ExchangeRate rateOpt = exchangeRateService.getExchangeRate(date, targetCurrency)
-                .orElseThrow(() -> new ExchangeRateNotFoundException(String.format("Exchange rate not found for %s on %s", targetCurrency, date)));
+        LocalDate rateDate = date == null ? LocalDate.now() : date;
+        ExchangeRate rateOpt = exchangeRateService.getExchangeRate(rateDate, targetCurrency)
+                .orElseThrow(() -> new ExchangeRateNotFoundException(String.format("Exchange rate not found for %s on %s", targetCurrency, rateDate)));
 
         BigDecimal convertedAmount = convert(BigDecimal.valueOf(amount), BigDecimal.valueOf(rateOpt.getRate()));
         return BigDecimalRoundingHelper.round(convertedAmount).doubleValue();
