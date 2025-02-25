@@ -10,7 +10,6 @@ import com.crewmeister.cmcodingchallenge.web.mapper.ExchangeRateMapper;
 import com.crewmeister.cmcodingchallenge.web.dto.ExchangeRateDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
@@ -35,11 +34,8 @@ public class ExchangeRateController implements ExchangeRateApi {
     }
 
     @Override
-    public Page<ExchangeRateDto> getAllRates(@RequestParam(required = false) String date,
-                                             @RequestParam(required = false) String cur,
-                                             @RequestParam(defaultValue = "0") int page,
-                                             @RequestParam(defaultValue = "30") int size) {
-        LocalDate parsedDate = DateParsingHelper.parseDate(date);
+    public Page<ExchangeRateDto> getAllRates(String date, String cur, int page, int size) {
+        LocalDate parsedDate = DateParsingHelper.parseDate(date).orElse(null);
         Page<ExchangeRate> exchangeRatePage = exchangeRateService.getExchangeRates(page, size, parsedDate, cur);
         return exchangeRatePage.map(ExchangeRateMapper::toDto);
     }
@@ -50,10 +46,8 @@ public class ExchangeRateController implements ExchangeRateApi {
     }
 
     @Override
-    public Double getConvertedAmount(@RequestParam String cur,
-                                     @RequestParam Double amount,
-                                     @RequestParam(required = false) String date) {
-        LocalDate parsedDate = DateParsingHelper.parseDate(date);
+    public Double getConvertedAmount(String cur, Double amount, String date) {
+        LocalDate parsedDate = DateParsingHelper.parseDate(date).orElse(null);
         return currencyConversionService.convert(cur, amount, parsedDate);
     }
 }

@@ -52,36 +52,29 @@ public class BundesbankApiClient implements ExternalQuoteClient {
     public ExchangeRateResponse getCurrencyQuotesForToday() {
         List<ExchangeRateResponse> exchangeRateResponses = sendRequest(buildDailyRequest());
 
-        for(ExchangeRateResponse exchangeRateResponse : exchangeRateResponses) {
-            // use today quotes if they already published
-            if (exchangeRateResponse.getDate().isEqual(LocalDate.now())) {
-                return exchangeRateResponse;
-            }
-
-            // otherwise use yesterday quotes
-            if (exchangeRateResponse.getDate().isEqual(LocalDate.now().minusDays(1))) {
-                return exchangeRateResponse;
-            }
-        }
-
-        throw new ExternalApiException("No actual quotes received");
+        return exchangeRateResponses.stream()
+                .filter(this::isValidQuoteForToday)
+                .findFirst()
+                .orElseThrow(() -> new ExternalApiException("No actual quotes received"));
     }
 
     @Override
     public List<ExchangeRateResponse> getCurrencyQuotesForInterval(LocalDate startDate, LocalDate endDate) {
-        return sendRequest(
-                buildIntervalRequest(
-                        DateParsingHelper.getDateAsString(startDate),
-                        DateParsingHelper.getDateAsString(endDate)
-                )
+        return sendRequest(buildRequestForDateRange(
+                DateParsingHelper.getDateAsString(startDate), DateParsingHelper.getDateAsString(endDate))
         );
     }
 
-    private HttpGet buildDailyRequest() {
-        return buildIntervalRequest(DateParsingHelper.getYesterdayDateAsString(), DateParsingHelper.getTodayDateAsString());
+    private boolean isValidQuoteForToday(ExchangeRateResponse response) {
+        LocalDate quoteDate = response.getDate();
+        return quoteDate.isEqual(LocalDate.now()) || quoteDate.isEqual(LocalDate.now().minusDays(1));
     }
 
-    private HttpGet buildIntervalRequest(String startDate, String endDate) {
+    private HttpGet buildDailyRequest() {
+        return buildRequestForDateRange(DateParsingHelper.getYesterdayDateAsString(), DateParsingHelper.getTodayDateAsString());
+    }
+
+    private HttpGet buildRequestForDateRange(String startDate, String endDate) {
         HttpGet request = new HttpGet(configuration.getServiceUrl() + configuration.getEndpoint());
         request.setHeader(HttpHeaders.ACCEPT_LANGUAGE, "en-US");
 
@@ -94,7 +87,7 @@ public class BundesbankApiClient implements ExternalQuoteClient {
         try {
             request.setURI(uriBuilder.build());
         } catch (URISyntaxException e) {
-            throw new ExternalApiException("Can not build request for the Bundesbank service: " + e.getMessage());
+            throw new ExternalApiException("Cannot build request for the Bundesbank service: " + e.getMessage());
         }
 
         return request;
@@ -105,7 +98,7 @@ public class BundesbankApiClient implements ExternalQuoteClient {
             CloseableHttpResponse response = httpClient.execute(request);
 
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                throw new ExternalApiException("Receive unsuccessful response from Bundesbank service: " + response.getEntity().toString());
+                throw new ExternalApiException("Unsuccessful response from Bundesbank service: " + response.getEntity().toString());
             }
 
             return parse(response.getEntity().getContent());
@@ -115,7 +108,7 @@ public class BundesbankApiClient implements ExternalQuoteClient {
         }
     }
 
-    private List<ExchangeRateResponse> parse(InputStream stream) throws JsonProcessingException {
+    private List<ExchangeRateResponse> parse(InputStream stream) {
         return exchangeRateParsingService.parse(stream);
     }
 }

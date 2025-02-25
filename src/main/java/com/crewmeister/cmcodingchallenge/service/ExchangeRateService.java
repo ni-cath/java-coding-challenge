@@ -6,7 +6,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.Optional;
 
 public interface ExchangeRateService {
@@ -31,14 +30,6 @@ public interface ExchangeRateService {
                                         @NonNull int size,
                                         @Nullable LocalDate date,
                                         @Nullable String currencyCode);
-
-    /**
-     * Get the exchange rates filtered by date and/or currency code
-     * @param date          specific date for exchange rates (if null get data for all dates)
-     * @param currencyCode  currency code for exchange rates (if null get data for all currencies)
-     * @return optional value
-     */
-    Collection<ExchangeRate> getExchangeRates(@Nullable LocalDate date, @Nullable String currencyCode);
 
     /**
      * Saving all exchanging rates to DB

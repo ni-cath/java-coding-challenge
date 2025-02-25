@@ -21,8 +21,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -42,35 +40,24 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
 
     @Override
     public Optional<ExchangeRate> getExchangeRate(LocalDate date, String currencyCode) {
-        validateDate(date);
-
-        return exchangeRateRepository.findByCurrencyAndDate(getCurrency(currencyCode), date);
+        return exchangeRateRepository.findByCurrencyAndDate(getCurrency(currencyCode), getValidDate(date));
     }
 
 
     @Override
     public Page<ExchangeRate> getExchangeRates(@NonNull int page, @NonNull int size, @Nullable LocalDate date, @Nullable String currencyCode) {
-        // if the date is provided, it should be valid
-        if (date != null) {
-            validateDate(date);
-        }
+        LocalDate specDate = date != null ? getValidDate(date) : null;
+        Currency specCurrency = currencyCode != null ? getCurrency(currencyCode) : null;
 
-        // if the currency code is provided, it should be valid
-        Currency currency = currencyCode == null ? null : getCurrency(currencyCode);
-        Specification<ExchangeRate> spec = Specification
-                .where(ExchangeRateSpec.exchangeRateForCurrency(currency))
-                .and(ExchangeRateSpec.exchangeRateForDate(date));
+        Specification<ExchangeRate> spec = buildSpecification(specCurrency, specDate);
 
         if (exchangeRateRepository.count(spec) == 0) {
-            throw new ExchangeRateNotFoundException("Unable to get exchange rates for " + currencyCode + " currency for " + date);
+            throw new ExchangeRateNotFoundException(
+                    String.format("Unable to get exchange rates for %s currency for %s", currencyCode, date)
+            );
         }
 
         return exchangeRateRepository.findAll(spec, PageRequest.of(page, size));
-    }
-
-    @Override
-    public Collection<ExchangeRate> getExchangeRates(LocalDate date, String currencyCode) {
-        return List.of();
     }
 
     @Override
@@ -78,21 +65,26 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
         exchangeRateRepository.saveAll(exchangeRates);
     }
 
-    private void validateDate(LocalDate date) {
+    private LocalDate getValidDate(LocalDate date) {
         if (DateParsingHelper.isNullOrFutureDate(date)) {
             logger.warn("Invalid date param {}", date);
             throw new InvalidDateException("Unable to get exchange rates for invalid date: " + date);
         }
+
+        return date;
     }
 
     private Currency getCurrency(String currencyCode) {
-        Optional<Currency> currency = currencyService.getCurrency(currencyCode);
+        return currencyService.getCurrency(currencyCode)
+                .orElseThrow(() -> {
+                    logger.warn("Invalid currency code {}", currencyCode);
+                    return new CurrencyNotFoundException("Unable to get exchange rates for invalid currency code: " + currencyCode);
+                });
+    }
 
-        if (currency.isEmpty()) {
-            logger.warn("Invalid currency code param {}", currencyCode);
-            throw new CurrencyNotFoundException("Unable to get exchange rates for invalid currency code: " + currencyCode);
-        }
-
-        return currency.get();
+    private Specification<ExchangeRate> buildSpecification(Currency currency, LocalDate date) {
+        return Specification
+                .where(ExchangeRateSpec.exchangeRateForCurrency(currency))
+                .and(ExchangeRateSpec.exchangeRateForDate(date));
     }
 }

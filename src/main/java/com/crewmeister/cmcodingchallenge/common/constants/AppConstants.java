@@ -1,5 +1,6 @@
 package com.crewmeister.cmcodingchallenge.common.constants;
 
+import java.math.MathContext;
 import java.time.format.DateTimeFormatter;
 
 public class AppConstants {
@@ -9,9 +10,9 @@ public class AppConstants {
 
     public static final int PRECISION = 4;
 
-    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
+    public static final MathContext MATH_CONTEXT = MathContext.DECIMAL128;
 
-    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
 
     public static final String FORMAT_PARAM = "format";
 

@@ -1,7 +1,7 @@
 package com.crewmeister.cmcodingchallenge.persistence.updater;
 
+import com.crewmeister.cmcodingchallenge.common.exception.InvalidDateException;
 import com.crewmeister.cmcodingchallenge.config.ExchangeRateUpdaterConfig;
-import com.crewmeister.cmcodingchallenge.external.dto.CurrencyQuote;
 import com.crewmeister.cmcodingchallenge.external.dto.ExchangeRateResponse;
 import com.crewmeister.cmcodingchallenge.external.client.ExternalQuoteClient;
 import com.crewmeister.cmcodingchallenge.persistence.entity.Currency;
@@ -18,10 +18,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @EnableAsync
 @Component
@@ -37,7 +37,7 @@ public class ExchangeRateUpdater {
 
     private final ExchangeRateUpdaterConfig configuration;
 
-    private final Map<String, Currency> currencyMap = new HashMap<>();
+    private final Map<String, Currency> currencyMap = new ConcurrentHashMap<>();
 
     @Autowired
     public ExchangeRateUpdater(ExternalQuoteClient externalQuoteClient,
@@ -52,52 +52,43 @@ public class ExchangeRateUpdater {
     @Async
     @Scheduled(cron = "${client.data.update.cron.expression}")
     public void updateDailyExchangeRates() {
-        logger.info("Start to update daily currency quotes");
+        logger.info("Starting to update daily currency quotes");
         ExchangeRateResponse receivedList = externalQuoteClient.getCurrencyQuotesForToday();
-        logger.info("Receive data from external service");
+        logger.info("Received data from external service");
         updateExchangeRates(receivedList);
-        logger.info("Finish updating daily currency quotes");
+        logger.info("Finished updating daily currency quotes");
     }
 
     public void updateAllExchangeRates() {
-        logger.info("Start to update all currency quotes");
+        logger.info("Starting to update all currency quotes");
 
-        LocalDate startDate = DateParsingHelper.parseDate(configuration.getEarliestDate());
+        LocalDate startDate = DateParsingHelper.parseDate(configuration.getEarliestDate())
+                .orElseThrow(() -> new InvalidDateException((String.format("Provided earliest date %s has invalid format", configuration.getEarliestDate()))));
         LocalDate endDate = LocalDate.now();
         List<ExchangeRateResponse> exchangeRateResponses = externalQuoteClient.getCurrencyQuotesForInterval(startDate, endDate);
 
         logger.info("Receive {} batches from external service for {} to {}", exchangeRateResponses.size(), startDate, endDate);
-        for(ExchangeRateResponse exchangeRateResponse : exchangeRateResponses) {
-            updateExchangeRates(exchangeRateResponse);
-        }
+        exchangeRateResponses.forEach(this::updateExchangeRates);
         logger.info("Finish updating all currency quotes");
     }
 
     private void updateExchangeRates(ExchangeRateResponse exchangeRateResponse) {
-        List<ExchangeRate> exchangeRatesForUpdate = new ArrayList<>(exchangeRateResponse.getCurrencyQuotes().size());
+        List<ExchangeRate> exchangeRatesForUpdate = exchangeRateResponse.getCurrencyQuotes().stream()
+                .map(quote -> ExchangeRate.builder()
+                        .rate(quote.getExchangeRate())
+                        .date(exchangeRateResponse.getDate())
+                        .currency(getOrCreateCurrency(quote.getCurrencyCode()))
+                        .build())
+                .collect(Collectors.toList());
 
-        for(CurrencyQuote quote: exchangeRateResponse.getCurrencyQuotes()) {
-            exchangeRatesForUpdate.add(
-                    ExchangeRate.builder()
-                            .rate(quote.getExchangeRate())
-                            .date(exchangeRateResponse.getDate())
-                            .currency(getOrCreateCurrency(quote.getCurrencyCode()))
-                            .build()
-            );
-        }
         exchangeRateService.saveAll(exchangeRatesForUpdate);
     }
 
     private Currency getOrCreateCurrency(String currencyCode) {
-        if (currencyMap.containsKey(currencyCode)) {
-            return currencyMap.get(currencyCode);
-        }
-
-        Currency currency = Currency.builder().currencyCode(currencyCode).build();
-
-        currencyMap.put(currencyCode, currency);
-        currencyService.save(currency);
-
-        return currency;
+        return currencyMap.computeIfAbsent(currencyCode, code -> {
+            Currency currency = Currency.builder().currencyCode(code).build();
+            currencyService.save(currency);
+            return currency;
+        });
     }
 }
