@@ -30,11 +30,12 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     @Override
     public Optional<Currency> getCurrency(String currencyCode) {
-        return currencyRepository.findByCurrencyCode(currencyCode);
+        return currencyRepository.findByCurrencyCode(currencyCode.toUpperCase());
     }
 
     @Override
     public void save(Currency currency) {
+        currency.setCurrencyCode(currency.getCurrencyCode().toUpperCase());
         currencyRepository.save(currency);
     }
 }

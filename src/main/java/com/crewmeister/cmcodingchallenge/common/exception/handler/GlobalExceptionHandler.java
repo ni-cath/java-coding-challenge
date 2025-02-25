@@ -1,9 +1,15 @@
-package com.crewmeister.cmcodingchallenge.common.exception;
+package com.crewmeister.cmcodingchallenge.common.exception.handler;
 
+import com.crewmeister.cmcodingchallenge.common.exception.CurrencyNotFoundException;
+import com.crewmeister.cmcodingchallenge.common.exception.ExchangeRateNotFoundException;
+import com.crewmeister.cmcodingchallenge.common.exception.InvalidDateException;
+import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -27,7 +33,7 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(IllegalArgumentException.class)
+    @ExceptionHandler({IllegalArgumentException.class, MethodArgumentTypeMismatchException.class})
     public String handleIllegalArgumentException(Exception e){
         return "Bad request: " + e.getMessage();
     }
